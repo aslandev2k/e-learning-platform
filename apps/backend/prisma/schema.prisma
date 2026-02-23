@@ -1,0 +1,291 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum AccountStatus {
+  PENDING_EMAIL_VERIFY
+  ACTIVE
+  LOCKED
+}
+
+enum RoomStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum ContestStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ProblemStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum JudgeStatus {
+  QUEUED
+  JUDGING
+  DONE
+  FAILED_SYSTEM
+}
+
+enum Language {
+  CPP
+  PY
+}
+
+enum OverallVerdict {
+  AC
+  WA
+  RE
+  TLE
+  CE
+}
+
+enum TestVerdict {
+  AC
+  WA
+  RE
+  TLE
+}
+
+//////////////////////////////////////////////////////
+// MODELS
+//////////////////////////////////////////////////////
+
+model User {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  passwordHash  String        @map("password_hash")
+  displayName   String        @map("display_name")
+  role          Role
+  status        AccountStatus
+  emailVerified Boolean       @default(false) @map("email_verified")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  ownedRooms    Room[]         @relation("RoomOwner")
+  roomMembers   RoomMember[]
+  submissions   Submission[]
+  contestScores ContestScore[]
+
+  @@index([role])
+  @@index([status])
+  @@map("users")
+}
+
+model Room {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  status      RoomStatus @default(ACTIVE)
+
+  ownerId Int  @map("owner_id")
+  owner   User @relation("RoomOwner", fields: [ownerId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  members     RoomMember[]
+  contests    Contest[]
+  problems    Problem[]
+  submissions Submission[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@map("rooms")
+}
+
+model RoomMember {
+  id Int @id @default(autoincrement())
+
+  roomId Int @map("room_id")
+  userId Int @map("user_id")
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@map("room_members")
+}
+
+model Contest {
+  id      Int           @id @default(autoincrement())
+  name    String
+  startAt DateTime      @map("start_at")
+  endAt   DateTime      @map("end_at")
+  status  ContestStatus @default(DRAFT)
+
+  roomId Int  @map("room_id")
+  room   Room @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  problems    ContestProblem[]
+  submissions Submission[]
+  scores      ContestScore[]
+
+  @@index([roomId])
+  @@index([status])
+  @@map("contests")
+}
+
+model Problem {
+  id          Int     @id @default(autoincrement())
+  title       String
+  statement   String
+  inputSpec   String? @map("input_spec")
+  outputSpec  String? @map("output_spec")
+  constraints String?
+
+  timeLimitMs   Int @map("time_limit_ms")
+  memoryLimitKb Int @map("memory_limit_kb")
+
+  status ProblemStatus @default(DRAFT)
+
+  roomId Int  @map("room_id")
+  room   Room @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  testcases     TestCase[]
+  contestLinks  ContestProblem[]
+  submissions   Submission[]
+  contestScores ContestScore[]
+
+  @@index([roomId])
+  @@index([status])
+  @@map("problems")
+}
+
+model ContestProblem {
+  id Int @id @default(autoincrement())
+
+  contestId Int @map("contest_id")
+  problemId Int @map("problem_id")
+
+  maxScore Float @map("max_score")
+  order    Int
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([contestId, problemId])
+  @@index([contestId])
+  @@map("contest_problems")
+}
+
+model TestCase {
+  id        Int @id @default(autoincrement())
+  problemId Int @map("problem_id")
+  testNo    Int @map("test_no")
+
+  input          String @db.Text
+  expectedOutput String @map("expected_output") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([problemId, testNo])
+  @@index([problemId])
+  @@map("test_cases")
+}
+
+model Submission {
+  id Int @id @default(autoincrement())
+
+  problemId Int  @map("problem_id")
+  roomId    Int  @map("room_id")
+  contestId Int? @map("contest_id")
+  studentId Int  @map("student_id")
+
+  language   Language
+  sourceCode String   @map("source_code") @db.Text
+
+  judgeStatus JudgeStatus @default(QUEUED) @map("judge_status")
+
+  overallVerdict OverallVerdict? @map("overall_verdict")
+  totalTimeMs    Int?            @map("total_time_ms")
+  compileLog     String?         @map("compile_log") @db.Text
+
+  passedTests Int? @map("passed_tests")
+  totalTests  Int? @map("total_tests")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  judgedAt  DateTime? @map("judged_at")
+
+  problem Problem  @relation(fields: [problemId], references: [id])
+  room    Room     @relation(fields: [roomId], references: [id])
+  contest Contest? @relation(fields: [contestId], references: [id])
+  student User     @relation(fields: [studentId], references: [id])
+
+  testResults SubmissionTestResult[]
+
+  @@index([studentId])
+  @@index([roomId])
+  @@index([contestId])
+  @@index([problemId])
+  @@map("submissions")
+}
+
+model SubmissionTestResult {
+  id Int @id @default(autoincrement())
+
+  submissionId Int @map("submission_id")
+  testNo       Int @map("test_no")
+
+  verdict  TestVerdict
+  timeMs   Int         @map("time_ms")
+  memoryKb Int?        @map("memory_kb")
+
+  submission Submission @relation(fields: [submissionId], references: [id])
+
+  @@unique([submissionId, testNo])
+  @@index([submissionId])
+  @@map("submission_test_results")
+}
+
+model ContestScore {
+  id Int @id @default(autoincrement())
+
+  contestId Int @map("contest_id")
+  problemId Int @map("problem_id")
+  studentId Int @map("student_id")
+
+  bestScore        Float     @default(0) @map("best_score")
+  lastSubmissionAt DateTime? @map("last_submission_at")
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+  student User    @relation(fields: [studentId], references: [id])
+
+  @@unique([contestId, problemId, studentId])
+  @@index([contestId, studentId])
+  @@map("contest_scores")
+}

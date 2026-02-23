@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "erasableSyntaxOnly": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "useUnknownInCatchVariables": false,
+    "lib": ["ES2022"],
+    "paths": {
+      "@repo/shared/*": ["../../packages/shared/*"],
+      "@repo/zod-schemas/*": ["../../packages/zod-schemas/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "src/generated"],
+  "include": ["src", "prisma.config.ts", "../../packages/*/src", "prisma/seed.ts"]
+}

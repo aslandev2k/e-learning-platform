@@ -1,0 +1,20 @@
+services:
+  postgres_ELP:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ELP
+      POSTGRES_PASSWORD: ELP
+      POSTGRES_DB: ELP
+      DATABASE_URL: postgres://ELP:ELP@localhost:5432/ELP
+    volumes:
+      - ./tmp/postgres_ELP:/var/lib/postgresql/data
+    ports:
+      - 5435:5432
+  redis_ELP:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ./tmp/redis_ELP/data:/data

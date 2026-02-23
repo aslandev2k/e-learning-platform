@@ -1,0 +1,52 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:docs": {
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false,
+      "dependsOn": ["^clean"]
+    },
+    "preview": {
+      "cache": false,
+      "dependsOn": ["build"],
+      "persistent": true
+    },
+    "lint": {
+      "cache": false,
+      "dependsOn": ["^lint"]
+    },
+    "openapi": {
+      "cache": false
+    },
+    "typecheck": {},
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:migrate:dev": {
+      "cache": false
+    },
+    "db:reset:dev": {
+      "cache": false
+    },
+    "db:studio:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:reset:force": {
+      "cache": false
+    }
+  }
+}

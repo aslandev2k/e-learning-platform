@@ -1,0 +1,201 @@
+/* Custom theme colors (success, warning, info, error) */
+:root {
+  --success: oklch(67.379% 0.18851 145.445);
+  --success-foreground: oklch(100% 0.00011 271.152);
+  --warning: oklch(77.018% 0.16577 71.018);
+  --warning-foreground: oklch(98.463% 0.00181 249.248);
+  --info: oklch(66.264% 0.13585 246.831);
+  --info-foreground: oklch(98.463% 0.00181 249.248);
+  --error: oklch(58.287% 0.19407 25.576);
+  --error-foreground: oklch(98.463% 0.00181 249.248);
+}
+
+@theme inline {
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Override Tabler illustration SVG colors to match app theme */
+/* 503 - Service Unavailable */
+.dark.dark .tblr-illustrations-computer-fix-a {
+  opacity: 0.07;
+  fill: oklch(0.1697 0.0482 263.6546);
+}
+
+.dark.dark .tblr-illustrations-computer-fix-b {
+  fill: oklch(0.1697 0.0482 263.6546);
+}
+
+.dark.dark .tblr-illustrations-computer-fix-c {
+  fill: oklch(0.2554 0.0955 264.1721);
+}
+
+.dark.dark .tblr-illustrations-computer-fix-d {
+  fill: oklch(0.2921 0.0629 262.0505);
+}
+
+/* 404 - Not Found */
+.dark.dark .tblr-illustrations-not-found-a {
+  fill: oklch(0.1697 0.0482 263.6546);
+}
+
+.dark.dark .tblr-illustrations-not-found-b {
+  opacity: 0.07;
+  fill: oklch(0.1697 0.0482 263.6546);
+}
+
+.dark.dark .tblr-illustrations-not-found-c {
+  fill: oklch(0.2921 0.0629 262.0505);
+}
+
+.dark.dark .tblr-illustrations-not-found-d {
+  fill: oklch(0.2554 0.0955 264.1721);
+}
+
+/* browser autofill issue */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: hsl(var(--foreground));
+  transition:
+    background-color 6000s 0s,
+    color 6000s 0s;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 24px;
+  background: oklch(from var(--border) l c h);
+  border: 2px solid transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(from var(--border) calc(l + 0.15) c h);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* hide eye - input type=password */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+@layer base {
+  .preview-layout {
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
+
+    .preview-layout__header {
+      width: 100dvw;
+      height: 64px;
+      overflow: hidden;
+    }
+
+    .preview-layout__body {
+      width: 100dvw;
+      height: calc(100dvh - 64px);
+      overflow: hidden;
+    }
+  }
+}
+
+/* Excel Table Styling */
+.excel-preview-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.excel-preview-container table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.excel-preview-container table tr:last-child {
+  border-bottom: none;
+}
+
+.excel-preview-container td {
+  max-width: 400px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151;
+  word-break: break-word;
+  white-space: normal;
+  border: 1px solid #e5e7eb;
+}
+
+/* Header rows styling */
+.excel-preview-container tr:nth-child(1) td,
+.excel-preview-container tr:nth-child(2) td {
+  padding: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: left;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+}
+
+/* Numeric values alignment */
+.excel-preview-container td[data-t="n"] {
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* String values alignment */
+.excel-preview-container td[data-t="s"] {
+  text-align: left;
+}
+
+/* Merged cells (colspan) */
+.excel-preview-container td[colspan] {
+  padding: 12px;
+  font-weight: 500;
+  text-align: center;
+  background-color: #fafafa;
+}
+
+/* Merged cells (rowspan) */
+.excel-preview-container td[rowspan] {
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+/* Hover effect for better readability */
+.excel-preview-container tr:hover td {
+  background-color: #f9fafb;
+}
+
+/* Title row styling */
+.excel-preview-container tr:first-child td {
+  padding: 14px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  background-color: #1f2937;
+  border: 1px solid #111827;
+}

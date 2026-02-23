@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./theme.css";
+@import "./custom.css";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+/* Toast */
+
+@layer base {
+  li[data-type="error"] {
+    @apply border-error/80!;
+  }
+}
+
+@layer base {
+  input {
+    @apply bg-background;
+  }
+}
