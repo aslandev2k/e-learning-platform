@@ -20,6 +20,7 @@ export const COLOR_THEMES = [
   'botanical-garden',
   'ocean-depths',
   'sunset-boulevard',
+  'code-nexus',
 ] as const;
 export type ColorTheme = (typeof COLOR_THEMES)[number];
 

@@ -35,6 +35,7 @@ const THEME_LABELS: Record<ColorTheme, string> = {
   'botanical-garden': 'Vườn thực vật',
   'ocean-depths': 'Đại dương sâu thẳm',
   'sunset-boulevard': 'Đại lộ hoàng hôn',
+  'code-nexus': 'Code Nexus',
 };
 
 const THEME_COLORS: Record<ColorTheme, string> = {
@@ -49,6 +50,7 @@ const THEME_COLORS: Record<ColorTheme, string> = {
   'botanical-garden': 'oklch(0.52 0.1 150)',
   'ocean-depths': 'oklch(0.55 0.12 195)',
   'sunset-boulevard': 'oklch(0.62 0.19 35)',
+  'code-nexus': 'oklch(0.55 0.23 265)',
 };
 
 export function NavUser() {
